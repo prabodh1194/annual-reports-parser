@@ -6,5 +6,13 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "mypy>=1.15.0",
+    "pypdf2>=3.0.1",
     "ruff>=0.9.6",
 ]
+
+# mypy global options:
+
+[tool.mypy]
+python_version = "3.13"
+warn_return_any = true
+warn_unused_configs = true
