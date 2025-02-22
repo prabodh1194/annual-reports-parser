@@ -5,9 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "mypy>=1.15.0",
     "pypdf2>=3.0.1",
-    "ruff>=0.9.6",
     "PyPDF2>=3.0.0",
     "torch>=2.0.0",
     "transformers>=4.46.0",
@@ -15,12 +13,20 @@ dependencies = [
     "rich>=13.0.0",
     "ipywidgets>=8.0.0",
     "tqdm>=4.66.0",
+    "boto3>=1.36.26",
+]
+
+[dependency-groups]
+dev = [
     "types-tqdm>=4.67.0.20241221",
     "types-colorama>=0.4.15.20240311",
     "types-protobuf>=5.29.1.20250208",
     "types-pywin32>=308.0.0.20250128",
     "types-setuptools>=75.8.0.20250210",
     "types-tabulate>=0.9.0.20241207",
+    "types-boto3>=1.36.26",
+    "mypy>=1.15.0",
+    "ruff>=0.9.6",
 ]
 
 # mypy global options:

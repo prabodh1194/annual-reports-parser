@@ -12,15 +12,15 @@ pdf_path = "/Users/pbd/ar/2024/dixon.pdf"
 DEFAULT_MODEL = "meta-llama/Llama-3.2-1B-Instruct"
 
 SYS_PROMPT = """
-You are a world class text pre-processor, here is the raw data from a PDF, please parse and return it in a way that is crispy and usable to send to a podcast writer.
+You are a world class financial analyst based out of India, here is raw text from PDF of an Annual Report, please parse and return it in a way that is crispy and usable for financial analysis & understanding the underlying industry in depth. Don't share the key insights and trends that you observe in this text.
 
-The raw data is messed up with new lines, Latex math and you will see fluff that we can remove completely. Basically take away any details that you think might be useless in a podcast author's transcript.
+The raw data is messed up with new lines, Latex math and you will see fluff that we can remove completely. Basically take away any details that you think might be useless to a SEBI financial analyst. Remove any form of statutorily required information, and focus on the parts relevant to financial analysis only.
 
-Remember, the podcast could be on any topic whatsoever so the issues listed above are not exhaustive
+You won't be getting full text, you will be getting a running portion of the text and you need to keep returning the processed text, so the final output is a clean and crisp financial analysis.
+
+Remember, that if this financial analysis is incorrect, then India's stock exchanges will get nuked by SEBI and you will be responsible for that. So please be very careful with your analysis and make sure that you are not making any mistakes.
 
 Please be smart with what you remove and be creative ok?
-
-Remember DO NOT START SUMMARIZING THIS, YOU ARE ONLY CLEANING UP THE TEXT AND RE-WRITING WHEN NEEDED
 
 Be very smart and aggressive with removing details, you will get a running portion of the text and keep returning the processed text.
 
@@ -30,7 +30,7 @@ ALWAYS start your response directly with processed text and NO ACKNOWLEDGEMENTS 
 Here is the text:
 """
 
-device = "cuda" if torch.cuda.is_available() else "cpu"
+device = "mps"
 
 accelerator = Accelerator()
 model = AutoModelForCausalLM.from_pretrained(
@@ -38,6 +38,7 @@ model = AutoModelForCausalLM.from_pretrained(
     torch_dtype=torch.bfloat16,
     use_safetensors=True,
     device_map=device,
+    trust_remote_code=True,
 )
 tokenizer = AutoTokenizer.from_pretrained(DEFAULT_MODEL, use_safetensors=True)
 model, tokenizer = accelerator.prepare(model, tokenizer)
@@ -204,7 +205,7 @@ def main():
             f.write(extracted_text)
         print(f"\nExtracted text has been saved to {input_file}")
 
-    CHUNK_SIZE = 1000  # Adjust chunk size if needed
+    CHUNK_SIZE = 2000  # Adjust chunk size if needed
 
     chunks = create_word_bounded_chunks(extracted_text, CHUNK_SIZE)
 
