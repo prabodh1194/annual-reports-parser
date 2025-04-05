@@ -1,3 +1,4 @@
+import json
 import os
 from concurrent.futures import ThreadPoolExecutor
 
@@ -13,6 +14,8 @@ def extract_text_from_pdf(pdf_path: str, page_no: int = -1) -> None:
         print(f"File {target_txt_file} already exists. Skipping...")
         return
 
+    print("Extracting text from page", page_no)
+
     md_text = (
         pymupdf4llm.to_markdown(pdf_path, pages=[page_no])
         .replace("**", "")
@@ -20,16 +23,28 @@ def extract_text_from_pdf(pdf_path: str, page_no: int = -1) -> None:
         .strip()
     )
 
+    print("Extracted text from page", page_no)
+
     with open(target_txt_file, "w") as f:
         f.write(md_text)
 
 
 def extract_text_from_all_pages(pdf_path: str) -> None:
     threads = []
-    exc = ThreadPoolExecutor()
+    exc = ThreadPoolExecutor(max_workers=2)
     doc = fitz.open(pdf_path)
+    error_pages = []
+
     for page_no in range(doc.page_count):
         threads.append(exc.submit(extract_text_from_pdf, pdf_path, page_no))
 
-    for thread in tqdm(threads):
-        thread.result()
+    for i, thread in tqdm(enumerate(threads)):
+        try:
+            thread.result()
+        except Exception:
+            print(f"Error in processing page {i}: {thread}")
+            error_pages.append(i)
+            continue
+
+    with open(f"{pdf_path}_error_pages.json", "w") as f:
+        json.dump(error_pages, f)
