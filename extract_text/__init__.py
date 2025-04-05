@@ -43,7 +43,7 @@ def extract_text_from_all_pages(pdf_path: str) -> None:
             thread.result()
         except Exception:
             print(f"Error in processing page {i}: {thread}")
-            error_pages.append(i)
+            error_pages.append(i + 1)
             continue
 
     with open(f"{pdf_path}_error_pages.json", "w") as f:
