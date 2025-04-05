@@ -117,7 +117,7 @@ dependencies = [
     { name = "boto3" },
     { name = "nltk" },
     { name = "openai" },
-    { name = "pymupdf" },
+    { name = "pymupdf4llm" },
 ]
 
 [package.dev-dependencies]
@@ -141,7 +141,7 @@ requires-dist = [
     { name = "boto3", specifier = ">=1.36.26" },
     { name = "nltk", specifier = ">=3.9.1" },
     { name = "openai", specifier = ">=1.69.0" },
-    { name = "pymupdf", specifier = ">=1.25.4" },
+    { name = "pymupdf4llm", specifier = ">=0.0.19" },
 ]
 
 [package.metadata.requires-dev]
@@ -448,6 +448,18 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/09/f8/3ba60c9cbb01c9aacc2e1c35fc7640456306da99cdea913954f33a0c9c74/pymupdf-1.25.4-cp39-abi3-musllinux_1_2_x86_64.whl", hash = "sha256:a8c23242d209512437187dc728001fc7c65c2dd9d37b50071f34c5cd745194a3", size = 21292722 },
     { url = "https://files.pythonhosted.org/packages/0e/0a/3eb1fab9e788790be32d8ca43235f59652d44252168bfba457c5496948fe/pymupdf-1.25.4-cp39-abi3-win32.whl", hash = "sha256:d90e6087f9b153999fa9f2c4709488fb0355de0302ec502a76c4fc0c0a0c535e", size = 15110936 },
     { url = "https://files.pythonhosted.org/packages/c3/9f/2872a29766dfe65fb97268233503cc9f7ba6e776eedbdb88ed47216aef84/pymupdf-1.25.4-cp39-abi3-win_amd64.whl", hash = "sha256:af8fa1f7920b3b27343b2511cb9fc44baf2bad8b948db0b0f9d5b2fa589cb305", size = 16579269 },
+]
+
+[[package]]
+name = "pymupdf4llm"
+version = "0.0.19"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pymupdf" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/43/92/1c37f7a586075bf9608a80f7b5c5e418a1e8a4f61c45e1011c71917cc492/pymupdf4llm-0.0.19.tar.gz", hash = "sha256:87bf871fbce9c372dd17cefa13890bbc20dd8251703e2ff0aaaed21401d27c5f", size = 27032 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/39/8c/40956be6d3760d49e6d6ea562b3f33d992e0209d367d97de3000c1b75b95/pymupdf4llm-0.0.19-py3-none-any.whl", hash = "sha256:b9701f104d26b29f3855d23504b6ab1dbc90ce45415b2f6170e169539478d384", size = 27688 },
 ]
 
 [[package]]

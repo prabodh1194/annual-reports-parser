@@ -8,7 +8,7 @@ dependencies = [
     "boto3>=1.36.26",
     "nltk>=3.9.1",
     "openai>=1.69.0",
-    "pymupdf>=1.25.4",
+    "pymupdf4llm>=0.0.19",
 ]
 
 [dependency-groups]
