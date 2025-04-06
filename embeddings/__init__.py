@@ -8,7 +8,6 @@ import os
 import pickle
 import shutil
 import time
-from typing import Iterator
 
 import nltk
 import numpy as np
@@ -20,6 +19,7 @@ from tqdm import tqdm
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+VLLM_ENDPOINT = os.getenv("VLLM_ENDPOINT")
 
 # Initialize NLTK to chunk documents
 try:
@@ -45,13 +45,7 @@ def compute_embeddings_batch(
     batch_size: int = 32,
     partition_size: int = 1000,
 ) -> None:
-    """Compute embeddings for document chunks using DeepSeek R1 and save in partitions.
-
-    Args:
-        chunks: List of document chunks
-        vllm_endpoint: Endpoint for vLLM service
-        output_path: Path to save embeddings
-    """
+    """Compute embeddings for document chunks using DeepSeek R1 and save in partitions."""
     current_partition = []
     partition_counter = 0
 
@@ -173,9 +167,10 @@ def generate_embeddings(*, pdf_path: str, report_year: str, company_name: str) -
 
     # Compute embeddings and save in partitions
     logger.info("Computing embeddings...")
+    assert VLLM_ENDPOINT, "VLLM_ENDPOINT is not set in the environment"
     compute_embeddings_batch(
         chunks,
-        args.vllm_endpoint,
+        VLLM_ENDPOINT,
         f"{pdf_path}_embeddings",
     )
     logger.info("Finished computing and saving embeddings")

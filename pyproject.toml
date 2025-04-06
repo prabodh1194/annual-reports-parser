@@ -6,11 +6,9 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "boto3>=1.36.26",
-    "hf-transfer>=0.1.9",
     "nltk>=3.9.1",
     "openai>=1.69.0",
     "pymupdf4llm>=0.0.19",
-    "vllm==0.6.6.post1",
 ]
 
 [dependency-groups]
@@ -27,6 +25,8 @@ dev = [
     "types-jmespath>=1.0.2.20240106",
     "pandas-stubs>=2.2.3.250308",
     "types-pygments>=2.19.0.20250305",
+    "types-requests>=2.32.0.20241016",
+    "pip>=25.0.1",
 ]
 
 # mypy global options:
