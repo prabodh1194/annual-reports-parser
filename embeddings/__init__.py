@@ -23,6 +23,7 @@ VLLM_ENDPOINT = os.getenv("VLLM_ENDPOINT")
 
 # Initialize NLTK to chunk documents
 try:
+    nltk.data.find("tokenizers/punkt_tab")
     nltk.data.find("tokenizers/punkt")
 except LookupError:
     logger.info("Downloading NLTK punkt tokenizer...")
@@ -40,7 +41,6 @@ class Document:
 
 def compute_embeddings_batch(
     chunks: list[dict],
-    vllm_endpoint: str,
     output_path: str,
     batch_size: int = 32,
     partition_size: int = 1000,
@@ -59,13 +59,15 @@ def compute_embeddings_batch(
         try:
             # Print request payload for debugging
             request_payload = {
-                "model": "/tmp/model",
+                "model": "/root/ubuntu/model",
                 # because this is loaded from the mounted directory
                 "input": prompts,
             }
 
+            assert VLLM_ENDPOINT, "VLLM_ENDPOINT is not set in the environment"
+
             response = requests.post(
-                f"{vllm_endpoint}/v1/embeddings", json=request_payload, timeout=60
+                f"{VLLM_ENDPOINT}/v1/embeddings", json=request_payload, timeout=60
             )
 
             response.raise_for_status()
@@ -157,20 +159,17 @@ def generate_embeddings(*, pdf_path: str, report_year: str, company_name: str) -
     logger.info("Chunking documents...")
     chunks = []
     next_chunk_idx = 0  # Initialize global chunk counter
-    for doc in document:
-        doc_chunks, next_chunk_idx = chunk_document(
-            Document(text=doc, report_year=report_year, company_name=company_name),
-            start_chunk_idx=next_chunk_idx,
-        )
-        chunks.extend(doc_chunks)
+    doc_chunks, next_chunk_idx = chunk_document(
+        Document(text=document, report_year=report_year, company_name=company_name),
+        start_chunk_idx=next_chunk_idx,
+    )
+    chunks.extend(doc_chunks)
     logger.info(f"Created {len(chunks)} chunks")
 
     # Compute embeddings and save in partitions
     logger.info("Computing embeddings...")
-    assert VLLM_ENDPOINT, "VLLM_ENDPOINT is not set in the environment"
     compute_embeddings_batch(
         chunks,
-        VLLM_ENDPOINT,
         f"{pdf_path}_embeddings",
     )
     logger.info("Finished computing and saving embeddings")
