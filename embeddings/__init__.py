@@ -5,7 +5,6 @@ Script to compute embeddings for Pile of Law dataset using `Alibaba-NLP/gte-Qwen
 import dataclasses
 import logging
 import os
-import pickle
 import shutil
 import time
 
@@ -91,7 +90,7 @@ def compute_embeddings_batch(
                         "content": chunk["content"],
                         "chunk_text": chunk["chunk_text"],
                         "chunk_start": chunk["chunk_start"],
-                        "embedding": pickle.dumps(np.array(embedding)),
+                        "embedding": np.array(embedding),
                         # Include document metadata
                         "report_year": chunk["report_year"],
                     }

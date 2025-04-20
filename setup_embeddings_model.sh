@@ -5,7 +5,7 @@ HF_HUB_ENABLE_HF_TRANSFER=1 uv run huggingface-cli download --local-dir $HOME/mo
 uv run python -m vllm.entrypoints.openai.api_server \
 --host 0.0.0.0 \
 --model $HOME/model \
---max-model-len 3072 \
+--max-model-len 4072 \
 --task embed &
 
 # Wait for vLLM to be ready by checking the health endpoint
