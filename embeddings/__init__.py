@@ -91,7 +91,6 @@ def compute_embeddings_batch(
                         "content": chunk["content"],
                         "chunk_text": chunk["chunk_text"],
                         "chunk_start": chunk["chunk_start"],
-                        "source": chunk["source"],
                         "embedding": pickle.dumps(np.array(embedding)),
                         # Include document metadata
                         "report_year": chunk["report_year"],
