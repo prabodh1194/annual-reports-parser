@@ -54,20 +54,22 @@ def compute_embeddings_batch(
         batch = chunks[i : i + batch_size]
 
         # Create prompt for each chunk - simplified prompt
-        prompts = [chunk["content"] for chunk in batch]
+        prompts = [chunk["chunk_text"] for chunk in batch]
 
         try:
             # Print request payload for debugging
             request_payload = {
-                "model": "/root/ubuntu/model",
-                # because this is loaded from the mounted directory
                 "input": prompts,
             }
 
             assert VLLM_ENDPOINT, "VLLM_ENDPOINT is not set in the environment"
 
             response = requests.post(
-                f"{VLLM_ENDPOINT}/v1/embeddings", json=request_payload, timeout=60
+                f"{VLLM_ENDPOINT}/v1/embeddings",
+                json=request_payload,
+                headers={
+                    "Accept": "application/json",
+                },
             )
 
             response.raise_for_status()
@@ -89,18 +91,10 @@ def compute_embeddings_batch(
                         "content": chunk["content"],
                         "chunk_text": chunk["chunk_text"],
                         "chunk_start": chunk["chunk_start"],
-                        "split": chunk["split"],
                         "source": chunk["source"],
                         "embedding": pickle.dumps(np.array(embedding)),
                         # Include document metadata
-                        "document_id": chunk["document_id"],
-                        "document_url": chunk["document_url"],
-                        "document_created_timestamp": chunk[
-                            "document_created_timestamp"
-                        ],
-                        "document_downloaded_timestamp": chunk[
-                            "document_downloaded_timestamp"
-                        ],
+                        "report_year": chunk["report_year"],
                     }
                 )
 
@@ -214,15 +208,19 @@ def chunk_document(
     current_chunk: list[str] = []
     current_length = 0
 
-    def create_chunk(_chunk_idx: int, _chunk_text: str) -> dict:
+    def create_chunk(_chunk_idx: int, _chunk_text: str, _overlap_size: int) -> dict:
         return {
             "id": str(_chunk_idx),
             "name": document.company_name,
             "content": document.text,  # Store full document content
             "chunk_text": _chunk_text.strip(),  # Store the specific chunk
-            "chunk_start": len(" ".join(current_chunk[: -(2 if overlap > 0 else 0)]))
-            if overlap > 0
-            else 0,  # Approximate start position
+            "chunk_start": 0
+            if _chunk_idx == 0
+            else (
+                len(" ".join(current_chunk[: -(_overlap_size if overlap > 0 else 0)]))
+                if overlap > 0
+                else 0
+            ),  # Approximate start position
             "report_year": document.report_year,
         }
 
@@ -231,12 +229,16 @@ def chunk_document(
 
         # If adding this sentence would exceed chunk size, save current chunk
         if current_length + sentence_len > chunk_size and current_chunk:
+            overlap_size = max(1, (len(current_chunk) // 4))
+
             chunk_text = " ".join(current_chunk)
-            chunks.append(create_chunk(chunk_idx, chunk_text))
+            chunks.append(create_chunk(chunk_idx, chunk_text, overlap_size))
             chunk_idx += 1
 
             # Keep last few sentences for overlap
-            overlap_text = " ".join(current_chunk[-2:])  # Keep last 2 sentences
+            overlap_text = " ".join(
+                current_chunk[-overlap_size:]
+            )  # Keep last 2 sentences
             current_chunk = [overlap_text] if overlap > 0 else []
             current_length = len(overlap_text) if overlap > 0 else 0
 
@@ -245,8 +247,9 @@ def chunk_document(
 
     # Add the last chunk if it's not empty
     if current_chunk:
+        overlap_size = max(1, (len(current_chunk) // 4))
         chunk_text = " ".join(current_chunk)
-        chunks.append(create_chunk(chunk_idx, chunk_text))
+        chunks.append(create_chunk(chunk_idx, chunk_text, overlap_size))
         chunk_idx += 1
 
     return chunks, chunk_idx
