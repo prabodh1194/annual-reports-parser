@@ -22,4 +22,6 @@ def query(db: Chroma) -> None:
 
     embeddings = result["data"][0]["embedding"]
 
-    db.similarity_search_by_vector(embeddings, k=10)
+    s = db.similarity_search_by_vector(embeddings, k=10)
+
+    print(s)
