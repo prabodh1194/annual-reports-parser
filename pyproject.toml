@@ -1,5 +1,5 @@
 [project]
-name = "financial-pdfs"
+name = "financial_pdfs"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -15,26 +15,7 @@ dependencies = [
     "pyarrow>=19.0.1",
     "pymupdf4llm>=0.0.19",
     "requests>=2.32.3",
-]
-
-[dependency-groups]
-dev = [
-    "types-tqdm>=4.67.0.20241221",
-    "types-colorama>=0.4.15.20240311",
-    "types-protobuf>=5.29.1.20250208",
-    "types-pywin32>=308.0.0.20250128",
-    "types-setuptools>=75.8.0.20250210",
-    "types-tabulate>=0.9.0.20241207",
-    "types-boto3>=1.36.26",
-    "mypy>=1.15.0",
-    "ruff>=0.9.6",
-    "types-jmespath>=1.0.2.20240106",
-    "pandas-stubs>=2.2.3.250308",
-    "types-pygments>=2.19.0.20250305",
-    "types-requests>=2.32.0.20241016",
-    "pip>=25.0.1",
-    "ipython>=9.1.0",
-    "pandas>=2.2.3",
+    "click>=8.1.8",
 ]
 
 # mypy global options:
@@ -47,4 +28,19 @@ warn_unused_configs = true
 [tool.uv]
 dev-dependencies = [
     "ipython>=9.3.0",
+    "mypy>=1.16.0",
+    "pandas-stubs>=2.2.3.250308",
+    "pandas>=2.2.3",
+    "pip>=25.0.1",
+    "ruff>=0.9.6",
+    "types-boto3>=1.36.26",
+    "types-colorama>=0.4.15.20240311",
+    "types-jmespath>=1.0.2.20240106",
+    "types-protobuf>=5.29.1.20250208",
+    "types-pygments>=2.19.0.20250305",
+    "types-pywin32>=308.0.0.20250128",
+    "types-requests>=2.32.0.20241016",
+    "types-setuptools>=75.8.0.20250210",
+    "types-tabulate>=0.9.0.20241207",
+    "types-tqdm>=4.67.0.20241221",
 ]

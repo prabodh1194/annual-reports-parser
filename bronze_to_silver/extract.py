@@ -7,8 +7,10 @@ import pymupdf4llm
 from tqdm import tqdm
 
 
-def extract_text_from_pdf(pdf_path: str, page_no: int = -1) -> None:
-    target_txt_file = f"{pdf_path}_{page_no}.txt"
+def extract_text_from_pdf(
+    pdf_path: str, bronze: str, silver: str, page_no: int = -1
+) -> None:
+    target_txt_file = f"{pdf_path}_{page_no}.txt".replace(bronze, silver)
 
     if os.path.exists(target_txt_file):
         print(f"File {target_txt_file} already exists. Skipping...")
@@ -29,14 +31,16 @@ def extract_text_from_pdf(pdf_path: str, page_no: int = -1) -> None:
         f.write(md_text)
 
 
-def extract_text_from_all_pages(pdf_path: str) -> None:
+def extract_text_from_all_pages(pdf_path: str, bronze: str, silver: str) -> None:
     threads = []
     exc = ThreadPoolExecutor(max_workers=2)
     doc = fitz.open(pdf_path)
     error_pages = []
 
     for page_no in range(doc.page_count):
-        threads.append(exc.submit(extract_text_from_pdf, pdf_path, page_no))
+        threads.append(
+            exc.submit(extract_text_from_pdf, pdf_path, bronze, silver, page_no)
+        )
 
     for i, thread in tqdm(enumerate(threads)):
         try:
