@@ -43,3 +43,8 @@ dev = [
 python_version = "3.13"
 warn_return_any = true
 warn_unused_configs = true
+
+[tool.uv]
+dev-dependencies = [
+    "ipython>=9.3.0",
+]

@@ -17,3 +17,6 @@ while ! curl -s http://localhost:8000/health > /dev/null; do
 done
 
 echo "vLLM service is ready!"
+IP=$(curl https://ipinfo.io/ip 2> /dev/null)
+
+echo "hit $IP:8000"
