@@ -7,15 +7,12 @@ requires-python = ">=3.12"
 dependencies = [
     "boto3>=1.36.26",
     "chromadb>=1.0.5",
-    "langchain>=0.3.23",
-    "langchain-community>=0.3.21",
-    "nltk>=3.9.1",
     "openai>=1.69.0",
     "pandas>=2.2.3",
     "pyarrow>=19.0.1",
-    "pymupdf4llm>=0.0.19",
     "requests>=2.32.3",
     "click>=8.1.8",
+    "docling>=2.34.0",
 ]
 
 # mypy global options:

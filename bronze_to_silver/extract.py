@@ -2,9 +2,11 @@ import json
 import os
 from concurrent.futures import ThreadPoolExecutor
 
-import pymupdf as fitz
-import pymupdf4llm
+from docling.document_converter import DocumentConverter
+from docling_parse.pdf_parser import DoclingPdfParser
 from tqdm import tqdm
+
+c = DocumentConverter()
 
 
 def extract_text_from_pdf(
@@ -19,7 +21,8 @@ def extract_text_from_pdf(
     print("Extracting text from page", page_no)
 
     md_text = (
-        pymupdf4llm.to_markdown(pdf_path, pages=[page_no])
+        c.convert(pdf_path, page_range=(page_no, page_no))
+        .document.export_to_text()
         .replace("**", "")
         .replace("##", "")
         .strip()
@@ -34,10 +37,10 @@ def extract_text_from_pdf(
 def extract_text_from_all_pages(pdf_path: str, bronze: str, silver: str) -> None:
     threads = []
     exc = ThreadPoolExecutor(max_workers=2)
-    doc = fitz.open(pdf_path)
+    doc = DoclingPdfParser().load(pdf_path)
     error_pages = []
 
-    for page_no in range(doc.page_count):
+    for page_no in range(doc.number_of_pages()):
         threads.append(
             exc.submit(extract_text_from_pdf, pdf_path, bronze, silver, page_no)
         )
