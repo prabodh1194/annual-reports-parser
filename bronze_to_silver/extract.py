@@ -40,7 +40,7 @@ def extract_text_from_all_pages(pdf_path: str, bronze: str, silver: str) -> None
     doc = DoclingPdfParser().load(pdf_path)
     error_pages = []
 
-    for page_no in range(doc.number_of_pages()):
+    for page_no in range(1 + doc.number_of_pages()):
         threads.append(
             exc.submit(extract_text_from_pdf, pdf_path, bronze, silver, page_no)
         )
