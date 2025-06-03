@@ -62,8 +62,11 @@ def embed(*, doc: str, pages: str, chroma_collection: chromadb.Collection) -> No
 def query(
     *,
     query: str,
-    chroma_collection: chromadb.Collection,
     n_results: int = 5,
 ) -> Any:
+    chroma_collection = chromadb.PersistentClient().get_collection(
+        embedding_function=openai_ef,
+        name="financial_data_collection",
+    )
     results = chroma_collection.query(query_texts=[query], n_results=n_results)
     return results  # Return the first result set
