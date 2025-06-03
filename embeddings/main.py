@@ -1,6 +1,6 @@
 import click
 
-from embed_doc import (
+from embeddings.embed_doc import (
     generate_chroma_client,
     embed,
     chunk_token_generator_streaming,

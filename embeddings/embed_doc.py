@@ -3,7 +3,7 @@ from typing import Iterable, Deque
 
 import chromadb
 
-from chroma_ef import openai_ef
+from embeddings.chroma_ef import openai_ef
 from tqdm import tqdm
 
 
@@ -59,3 +59,13 @@ def generate_chroma_client(*, company_name: str, year: str) -> chromadb.Collecti
 
 def embed(*, doc: str, pages: str, chroma_collection: chromadb.Collection) -> None:
     chroma_collection.add(ids=pages, documents=doc)
+
+
+def query(
+    *,
+    query: str,
+    chroma_collection: chromadb.Collection,
+    n_results: int = 5,
+) -> list[chromadb.Document]:
+    results = chroma_collection.query(query_texts=[query], n_results=n_results)
+    return results["documents"][0]  # Return the first result set
