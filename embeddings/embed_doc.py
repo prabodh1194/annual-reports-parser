@@ -4,25 +4,27 @@ from typing import Iterable, Deque
 import chromadb
 
 from chroma_ef import openai_ef
+from tqdm import tqdm
 
-import tiktoken
+
 from collections import deque
+from transformers import AutoTokenizer
 
 
 def chunk_token_generator_streaming(
     *,
     folder_path: str,
-    model_name: str = "gpt-4",
+    model_name: str = "Alibaba-NLP/gte-Qwen2-7B-instruct",
     chunk_size: int = 4072,
     overlap: int = 512,
 ) -> Iterable[str]:
-    enc = tiktoken.encoding_for_model(model_name)
+    enc = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
     files = sorted(os.listdir(folder_path))
 
     buffer: Deque[int] = deque()  # sliding window buffer
     current_len = 0  # track current length of buffer
 
-    for filename in files:
+    for filename in tqdm(files):
         file_path = os.path.join(folder_path, filename)
         with open(file_path, "r", encoding="utf-8") as f:
             text = f.read()
@@ -55,7 +57,5 @@ def generate_chroma_client(*, company_name: str, year: str) -> chromadb.Collecti
     )
 
 
-def embed(
-    *, doc: list[str], pages: list[str], chroma_collection: chromadb.Collection
-) -> None:
+def embed(*, doc: str, pages: str, chroma_collection: chromadb.Collection) -> None:
     chroma_collection.add(ids=pages, documents=doc)

@@ -16,7 +16,7 @@ def hello(txt_location: str) -> None:
     for idx, txt in enumerate(
         chunk_token_generator_streaming(folder_path=txt_location)
     ):
-        embed(doc=list(txt), pages=[str(idx)], chroma_collection=c_client)
+        embed(doc=txt, pages=str(idx), chroma_collection=c_client)
 
 
 if __name__ == "__main__":
