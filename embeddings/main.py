@@ -8,9 +8,8 @@ from embed_doc import (
 
 
 @click.command()
-@click.option("--txt-location", help="txts file path")
-def hello(txt_location: str | None) -> None:
-    assert txt_location
+@click.option("--txt-location", help="txts file path", required=True)
+def hello(txt_location: str) -> None:
     c_client = generate_chroma_client(
         company_name="Dixon Technologies (India) Ltd", year="2024"
     )
