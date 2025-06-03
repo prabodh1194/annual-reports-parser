@@ -7,7 +7,9 @@ from tqdm import tqdm
 from chroma_ef import openai_ef
 
 
-def get_text_from_parsed_files(directory: str) -> Iterable[tuple[str, tuple[str, str]]]:
+def get_text_from_parsed_files(
+    directory: str,
+) -> Iterable[tuple[tuple[str, str], tuple[str, str]]]:
     # Get all text files in the directory
     text_files = sorted([f for f in os.listdir(directory) if f.endswith(".txt")])
 
@@ -25,19 +27,19 @@ def get_text_from_parsed_files(directory: str) -> Iterable[tuple[str, tuple[str,
             text2 = f.read()
 
         # Combine the two texts
-        yield text1 + "\n" + text2, (str(i), str(i + 1))
+        yield (text1, text2), (str(i), str(i + 1))
 
 
 def generate_chroma_client(*, company_name: str, year: str) -> chromadb.Collection:
     chroma_client = chromadb.PersistentClient()
     return chroma_client.get_or_create_collection(
+        embedding_function=openai_ef,
         name="financial_data_collection",
-        configuration={"embedding_function": openai_ef},
         metadata={"company_name": company_name, "year": year},
     )
 
 
 def embed(
-    *, doc: str, pages: list[str], chroma_collection: chromadb.Collection
+    *, doc: list[str], pages: list[str], chroma_collection: chromadb.Collection
 ) -> None:
     chroma_collection.add(ids=pages, documents=doc)
