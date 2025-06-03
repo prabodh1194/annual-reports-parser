@@ -1,14 +1,12 @@
 import os
-from typing import Iterable, Deque
+from collections import deque
+from typing import Iterable, Deque, Any
 
 import chromadb
+from tqdm import tqdm
+from transformers import AutoTokenizer
 
 from embeddings.chroma_ef import openai_ef
-from tqdm import tqdm
-
-
-from collections import deque
-from transformers import AutoTokenizer
 
 
 def chunk_token_generator_streaming(
@@ -66,6 +64,6 @@ def query(
     query: str,
     chroma_collection: chromadb.Collection,
     n_results: int = 5,
-) -> list[chromadb.Document]:
+) -> Any:
     results = chroma_collection.query(query_texts=[query], n_results=n_results)
-    return results["documents"][0]  # Return the first result set
+    return results  # Return the first result set
