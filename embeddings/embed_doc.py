@@ -1,33 +1,49 @@
 import os
-from typing import Iterable
-import chromadb
+from typing import Iterable, Deque
 
-from tqdm import tqdm
+import chromadb
 
 from chroma_ef import openai_ef
 
+import tiktoken
+from collections import deque
 
-def get_text_from_parsed_files(
-    directory: str,
-) -> Iterable[tuple[tuple[str, str], tuple[str, str]]]:
-    # Get all text files in the directory
-    text_files = sorted([f for f in os.listdir(directory) if f.endswith(".txt")])
 
-    # Iterate through the text files in pairs
-    for i in tqdm(range(len(text_files) - 1)):
-        file1 = text_files[i]
-        file2 = text_files[i + 1]
+def chunk_token_generator_streaming(
+    *,
+    folder_path: str,
+    model_name: str = "gpt-4",
+    chunk_size: int = 4072,
+    overlap: int = 512,
+) -> Iterable[str]:
+    enc = tiktoken.encoding_for_model(model_name)
+    files = sorted(os.listdir(folder_path))
 
-        # Read the content of the first file
-        with open(os.path.join(directory, file1), "r", encoding="utf-8") as f:
-            text1 = f.read()
+    buffer: Deque[int] = deque()  # sliding window buffer
+    current_len = 0  # track current length of buffer
 
-        # Read the content of the second file
-        with open(os.path.join(directory, file2), "r", encoding="utf-8") as f:
-            text2 = f.read()
+    for filename in files:
+        file_path = os.path.join(folder_path, filename)
+        with open(file_path, "r", encoding="utf-8") as f:
+            text = f.read()
+            tokens = enc.encode(text)
 
-        # Combine the two texts
-        yield (text1, text2), (str(i), str(i + 1))
+            for token in tokens:
+                buffer.append(token)
+                current_len += 1
+
+                if current_len == chunk_size:
+                    # yield current chunk
+                    yield enc.decode(buffer, errors="strict")
+
+                    # slide window with overlap
+                    for _ in range(chunk_size - overlap):
+                        buffer.popleft()
+                        current_len -= 1
+
+    # Yield remaining tokens at the end (if any)
+    if current_len > 0:
+        yield enc.decode(buffer, errors="strict")
 
 
 def generate_chroma_client(*, company_name: str, year: str) -> chromadb.Collection:

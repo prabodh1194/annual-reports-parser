@@ -2,8 +2,8 @@ import click
 
 from embed_doc import (
     generate_chroma_client,
-    get_text_from_parsed_files,
     embed,
+    chunk_token_generator_streaming,
 )
 
 
@@ -13,8 +13,10 @@ def hello(txt_location: str) -> None:
     c_client = generate_chroma_client(
         company_name="Dixon Technologies (India) Ltd", year="2024"
     )
-    for txt, pages in get_text_from_parsed_files(txt_location):
-        embed(doc=list(txt), pages=list(pages), chroma_collection=c_client)
+    for idx, txt in enumerate(
+        chunk_token_generator_streaming(folder_path=txt_location)
+    ):
+        embed(doc=list(txt), pages=[str(idx)], chroma_collection=c_client)
 
 
 if __name__ == "__main__":
