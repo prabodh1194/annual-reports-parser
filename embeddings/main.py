@@ -13,9 +13,7 @@ def hello(txt_location: str) -> None:
     c_client = generate_chroma_client(
         company_name="Dixon Technologies (India) Ltd", year="2024"
     )
-    for idx, txt in enumerate(
-        chunk_token_generator_streaming(folder_path=txt_location)
-    ):
+    for txt, idx in chunk_token_generator_streaming(folder_path=txt_location):
         embed(doc=txt, pages=str(idx), chroma_collection=c_client)
 
 

@@ -15,14 +15,15 @@ def chunk_token_generator_streaming(
     model_name: str = "Alibaba-NLP/gte-Qwen2-7B-instruct",
     chunk_size: int = 4072,
     overlap: int = 512,
-) -> Iterable[str]:
+) -> Iterable[tuple[str, str]]:
     enc = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
     files = sorted(os.listdir(folder_path))
 
     buffer: Deque[int] = deque()  # sliding window buffer
     current_len = 0  # track current length of buffer
+    pages = set()
 
-    for filename in tqdm(files):
+    for page_no, filename in tqdm(enumerate(files)):
         file_path = os.path.join(folder_path, filename)
         with open(file_path, "r", encoding="utf-8") as f:
             text = f.read()
@@ -31,10 +32,15 @@ def chunk_token_generator_streaming(
             for token in tokens:
                 buffer.append(token)
                 current_len += 1
+                pages.add(page_no)
 
                 if current_len == chunk_size:
                     # yield current chunk
-                    yield enc.decode(buffer, errors="strict")
+                    yield (
+                        enc.decode(buffer, errors="strict"),
+                        ",".join(map(str, sorted(list(pages)))),
+                    )
+                    pages = set()
 
                     # slide window with overlap
                     for _ in range(chunk_size - overlap):
@@ -43,7 +49,10 @@ def chunk_token_generator_streaming(
 
     # Yield remaining tokens at the end (if any)
     if current_len > 0:
-        yield enc.decode(buffer, errors="strict")
+        yield (
+            enc.decode(buffer, errors="strict"),
+            ",".join(map(str, sorted(list(pages)))),
+        )
 
 
 def generate_chroma_client(*, company_name: str, year: str) -> chromadb.Collection:
