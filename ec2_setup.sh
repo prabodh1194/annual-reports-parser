@@ -2,7 +2,8 @@
 
 aws ec2 create-security-group --group-name "qwen-embeddings" --description "for qwen embeddings" --vpc-id "vpc-08bc8fb7fb5322f29"
 
-aws ec2 authorize-security-group-ingress --group-name "qwen-embeddings" --ip-permissions '{"IpProtocol":"tcp","FromPort":8000,"ToPort":8000,"IpRanges":[{"CidrIp":"0.0.0.0/0"}]}' '{"IpProtocol":"tcp","FromPort":22,"ToPort":22,"IpRanges":[{"CidrIp":"0.0.0.0/0"}]}' '{"IpProtocol":"tcp","FromPort":443,"ToPort":443,"IpRanges":[{"CidrIp":"0.0.0.0/0"}]}'
+aws ec2 authorize-security-group-ingress --group-name "qwen-embeddings" --ip-permissions '{"IpProtocol":"tcp","FromPort":8001,"ToPort":8001,"IpRanges":[{"CidrIp":"0.0.0.0/0"}]}' '{"IpProtocol":"tcp","FromPort":8000,"ToPort":8000,"IpRanges":[{"CidrIp":"0.0.0.0/0"}]}' '{"IpProtocol":"tcp","FromPort":22,"ToPort":22,"IpRanges":[{"CidrIp":"0.0.0.0/0"}]}' '{"IpProtocol":"tcp","FromPort":443,"ToPort":443,"IpRanges":[{"CidrIp":"0.0.0.0/0"}]}'
+aws ec2 authorize-security-group-ingress --group-name "qwen-embeddings" --ip-permissions '{"IpProtocol":"tcp","FromPort":8001,"ToPort":8001,"IpRanges":[{"CidrIp":"0.0.0.0/0"}]}'
 
 aws ec2 run-instances --image-id "ami-084568db4383264d4" --instance-type "g6e.xlarge" --key-name "ec2-kp" \
 --instance-market-options '{"MarketType":"spot"}' \
