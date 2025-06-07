@@ -46,7 +46,8 @@ aws route53 change-resource-record-sets --hosted-zone-id "$ZONE_ID" \
 sudo apt install python3.12
 
 sudo apt update
-sudo apt install -y ubuntu-drivers-common
+sudo apt install -y ubuntu-drivers-common build-essential python3.12-dev
+
 sudo ubuntu-drivers autoinstall
 
 curl -LsSf https://astral.sh/uv/install.sh | sh
