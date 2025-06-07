@@ -13,6 +13,32 @@ aws ec2 run-instances --image-id "ami-084568db4383264d4" --instance-type "g6e.xl
 --private-dns-name-options '{"HostnameType":"ip-name","EnableResourceNameDnsARecord":false,"EnableResourceNameDnsAAAARecord":false}' \
 --count "1"
 
+# Get the Instance ID of the newly launched instance
+INSTANCE_ID=$(aws ec2 describe-instances \
+  --filters "Name=tag:Name,Values=qwen-embeddings" "Name=instance-state-name,Values=running" \
+  --query "Reservations[0].Instances[0].InstanceId" --output text)
+
+# Get the Public IP address
+PUBLIC_IP=$(aws ec2 describe-instances --instance-ids "$INSTANCE_ID" \
+  --query "Reservations[0].Instances[0].PublicIpAddress" --output text)
+
+ZONE_ID=$(aws route53 list-hosted-zones-by-name --dns-name "openn.ai." --query "HostedZones[0].Id" --output text | sed 's|/hostedzone/||')
+
+# Create a DNS A record in Route53 for emb.openn.ai
+aws route53 change-resource-record-sets --hosted-zone-id "$ZONE_ID" \
+  --change-batch '{
+    "Changes": [{
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "emb.openn.ai.",
+        "Type": "A",
+        "TTL": 300,
+        "ResourceRecords": [{"Value": "'"$PUBLIC_IP"'"}]
+      }
+    }]
+  }'
+
+
 # --network-interfaces '{"SubnetId":"subnet-0a88da9b6432efc1d","AssociatePublicIpAddress":true,"DeviceIndex":0,"Groups":["sg-0789e8e758087c5e4"]}' \
 # --network-interfaces '{"AssociatePublicIpAddress":true,"DeviceIndex":0,"Groups":["sg-0789e8e758087c5e4"],"SubnetId":"subnet-021383e66ab47a71a"}' \
 
