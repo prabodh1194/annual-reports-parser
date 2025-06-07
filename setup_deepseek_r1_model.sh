@@ -13,7 +13,7 @@ uv run python -m vllm.entrypoints.openai.api_server \
 echo "Waiting for vLLM service to be ready..."
 
 while ! curl -s http://localhost:8001/health > /dev/null; do
-  sleep 5
+  sleep 10
   echo "Still waiting for vLLM service..."
 done
 
