@@ -12,7 +12,7 @@ c = DocumentConverter()
 def extract_text_from_pdf(
     pdf_path: str, bronze: str, silver: str, page_no: int = -1
 ) -> None:
-    target_txt_file = f"{pdf_path}_{page_no}.txt".replace(bronze, silver)
+    target_txt_file = f"{pdf_path}/{page_no}.txt".replace(bronze, silver)
 
     if os.path.exists(target_txt_file):
         print(f"File {target_txt_file} already exists. Skipping...")
