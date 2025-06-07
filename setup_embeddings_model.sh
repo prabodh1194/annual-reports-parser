@@ -7,6 +7,7 @@ HF_HUB_ENABLE_HF_TRANSFER=1 uv run huggingface-cli download --local-dir "$MODEL_
 uv run python -m vllm.entrypoints.openai.api_server \
 --host 0.0.0.0 \
 --model "$MODEL_LOCATION" \
+--gpu-memory-utilization 0.5 \
 --max-model-len 4072 \
 --task embed &
 
