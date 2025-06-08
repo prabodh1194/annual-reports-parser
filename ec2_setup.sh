@@ -3,7 +3,6 @@
 aws ec2 create-security-group --group-name "qwen-embeddings" --description "for qwen embeddings" --vpc-id "vpc-08bc8fb7fb5322f29"
 
 aws ec2 authorize-security-group-ingress --group-name "qwen-embeddings" --ip-permissions '{"IpProtocol":"tcp","FromPort":8001,"ToPort":8001,"IpRanges":[{"CidrIp":"0.0.0.0/0"}]}' '{"IpProtocol":"tcp","FromPort":8000,"ToPort":8000,"IpRanges":[{"CidrIp":"0.0.0.0/0"}]}' '{"IpProtocol":"tcp","FromPort":22,"ToPort":22,"IpRanges":[{"CidrIp":"0.0.0.0/0"}]}' '{"IpProtocol":"tcp","FromPort":443,"ToPort":443,"IpRanges":[{"CidrIp":"0.0.0.0/0"}]}'
-aws ec2 authorize-security-group-ingress --group-name "qwen-embeddings" --ip-permissions '{"IpProtocol":"tcp","FromPort":8001,"ToPort":8001,"IpRanges":[{"CidrIp":"0.0.0.0/0"}]}'
 
 aws ec2 run-instances --image-id "ami-084568db4383264d4" --instance-type "g6e.xlarge" --key-name "ec2-kp" \
 --instance-market-options '{"MarketType":"spot"}' \
@@ -43,10 +42,8 @@ aws route53 change-resource-record-sets --hosted-zone-id "$ZONE_ID" \
 # --network-interfaces '{"SubnetId":"subnet-0a88da9b6432efc1d","AssociatePublicIpAddress":true,"DeviceIndex":0,"Groups":["sg-0789e8e758087c5e4"]}' \
 # --network-interfaces '{"AssociatePublicIpAddress":true,"DeviceIndex":0,"Groups":["sg-0789e8e758087c5e4"],"SubnetId":"subnet-021383e66ab47a71a"}' \
 
-sudo apt install python3.12
-
 sudo apt update
-sudo apt install -y ubuntu-drivers-common build-essential python3.12-dev
+sudo apt install -y python3.12 ubuntu-drivers-common build-essential python3.12-dev
 
 sudo ubuntu-drivers autoinstall
 

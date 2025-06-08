@@ -101,30 +101,19 @@ class RAGChatClient:
 
     def create_rag_prompt(self, query: str, context: str) -> str:
         """
-        Create a RAG prompt with context and query
-
-        Args:
-            query: User query
-            context: Retrieved document context
-
-        Returns:
-            Formatted prompt string
+        Create a RAG prompt optimized for IBM Granite models
         """
-        prompt = f"""You are a helpful AI assistant. Use the following context to answer the user's question accurately and comprehensively.
+        prompt = f"""Below is an instruction that describes a task, paired with context that provides relevant information. Write a response that appropriately completes the request.
 
-Context:
-{context}
+    ### Context:
+    {context}
 
-Instructions:
-- Base your answer primarily on the provided context
-- If you reference information from the context, mention which document(s) you're using
-- If the context doesn't contain sufficient information to answer the question, state this clearly
-- Be accurate and cite your sources when possible
-- Provide a helpful and complete response
+    ### Instruction:
+    Based on the context provided above, please answer the following question accurately and comprehensively. If you reference specific information from the context, indicate which document contains that information. If the context doesn't contain enough information to fully answer the question, please state this clearly.
 
-Question: {query}
+    Question: {query}
 
-Answer:"""
+    ### Response:"""
 
         return prompt
 
@@ -188,6 +177,8 @@ if __name__ == "__main__":
         "What is the main topic discussed in the documents?",
         "Can you explain the key concepts mentioned?",
         "What are the important details I should know?",
+        "Who is the CEO of Dixon Technologies?",
+        "Who is the chairman of Dixon Technologies?",
     ]
 
     for q in queries:
