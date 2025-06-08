@@ -23,7 +23,7 @@ def chunk_token_generator_streaming(
     current_len = 0  # track current length of buffer
     pages = set()
 
-    for page_no, filename in tqdm(enumerate(files)):
+    for filename in tqdm(files):
         file_path = os.path.join(folder_path, filename)
         with open(file_path, "r", encoding="utf-8") as f:
             text = f.read()
@@ -32,7 +32,7 @@ def chunk_token_generator_streaming(
             for token in tokens:
                 buffer.append(token)
                 current_len += 1
-                pages.add(page_no)
+                pages.add(filename)
 
                 if current_len == chunk_size:
                     # yield current chunk
