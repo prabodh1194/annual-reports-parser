@@ -6,7 +6,7 @@ import chromadb
 from tqdm import tqdm
 from transformers import AutoTokenizer
 
-from embeddings.chroma_ef import openai_ef
+from embeddings.chroma_ef import openai_ef, get_embedding_path
 
 
 def chunk_token_generator_streaming(
@@ -56,7 +56,8 @@ def chunk_token_generator_streaming(
 
 
 def generate_chroma_client(*, company_name: str, year: str) -> chromadb.Collection:
-    chroma_client = chromadb.PersistentClient()
+    chroma_client = chromadb.PersistentClient(path=get_embedding_path())
+
     return chroma_client.get_or_create_collection(
         embedding_function=openai_ef,
         name="financial_data_collection",
@@ -73,7 +74,9 @@ def query(
     query: str,
     n_results: int = 5,
 ) -> Any:
-    chroma_collection = chromadb.PersistentClient().get_collection(
+    chroma_collection = chromadb.PersistentClient(
+        path=get_embedding_path()
+    ).get_collection(
         embedding_function=openai_ef,
         name="financial_data_collection",
     )
