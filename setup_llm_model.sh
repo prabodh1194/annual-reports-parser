@@ -1,5 +1,5 @@
 MODEL_NAME="ibm-granite/granite-3.3-8b-instruct"
-MODEL_LOCATION="$HOME/deepseek_model"
+MODEL_LOCATION="$HOME/llm_model"
 
 HF_HUB_ENABLE_HF_TRANSFER=1 uv run huggingface-cli download --local-dir "$MODEL_LOCATION" $MODEL_NAME || exit 1
 

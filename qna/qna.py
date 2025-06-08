@@ -120,7 +120,7 @@ class RAGChatClient:
     def chat_completion(
         self,
         query: str,
-        model: str = "/home/ubuntu/deepseek_model",  # Adjust to your model
+        model: str = "/home/ubuntu/llm_model",
         temperature: float = 0.7,
         max_tokens: int = 500,
     ) -> dict[str, Any]:
