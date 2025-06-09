@@ -1,4 +1,5 @@
 import os
+import re
 from collections import deque
 from typing import Iterable, Deque, Any
 
@@ -17,7 +18,7 @@ def chunk_token_generator_streaming(
     overlap: int = 512,
 ) -> Iterable[tuple[str, str]]:
     enc = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
-    files = sorted(os.listdir(folder_path))
+    files = sorted(os.listdir(folder_path), key=lambda x: int(x.split(".")[0]))
 
     buffer: Deque[int] = deque()  # sliding window buffer
     current_len = 0  # track current length of buffer
@@ -27,7 +28,7 @@ def chunk_token_generator_streaming(
         file_path = os.path.join(folder_path, filename)
         with open(file_path, "r", encoding="utf-8") as f:
             text = f.read()
-            tokens = enc.encode(text)
+            tokens = enc.encode(re.sub("\s+", " ", text))
 
             for token in tokens:
                 buffer.append(token)
