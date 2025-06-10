@@ -13,6 +13,7 @@ dependencies = [
     "requests>=2.32.3",
     "click>=8.1.8",
     "docling>=2.34.0",
+    "langchain-docling>=0.2.0",
 ]
 
 # mypy global options:
