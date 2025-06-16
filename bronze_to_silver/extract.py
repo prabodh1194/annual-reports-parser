@@ -1,5 +1,6 @@
 import json
 import os
+import re
 from concurrent.futures import ThreadPoolExecutor
 
 from docling.document_converter import DocumentConverter
@@ -7,6 +8,13 @@ from docling_parse.pdf_parser import DoclingPdfParser
 from tqdm import tqdm
 
 c = DocumentConverter()
+
+regex_replacements = {
+    r"--+": "-",  # Replace multiple dashes with a single dash
+    r"\s+": " ",  # Replace multiple spaces with a single space
+    r"\n+": " ",  # Replace multiple newlines with a single space
+    r"\t+": " ",  # Replace multiple tabs with a single space
+}
 
 
 def extract_text_from_pdf(
@@ -27,6 +35,9 @@ def extract_text_from_pdf(
         .replace("##", "")
         .strip()
     )
+
+    for pattern, replacement in regex_replacements.items():
+        md_text = re.sub(pattern, replacement, md_text)
 
     print("Extracted text from page", page_no)
 

@@ -1,5 +1,4 @@
 import os
-import re
 from collections import deque
 from typing import Iterable, Deque, Any
 
@@ -28,7 +27,7 @@ def chunk_token_generator_streaming(
         file_path = os.path.join(folder_path, filename)
         with open(file_path, "r", encoding="utf-8") as f:
             text = f.read()
-            tokens = enc.encode(re.sub("\s+", " ", text))
+            tokens = enc.encode(text)
 
             for token in tokens:
                 buffer.append(token)
