@@ -9,6 +9,17 @@ from transformers import AutoTokenizer
 from embeddings.chroma_ef import openai_ef, get_embedding_path
 
 
+def file_by_file_reader(
+    *,
+    folder_path: str,
+) -> Iterable[tuple[str, str]]:
+    files = sorted(os.listdir(folder_path), key=lambda x: int(x.split(".")[0]))
+    for filename in tqdm(files):
+        file_path = os.path.join(folder_path, filename)
+        with open(file_path, "r", encoding="utf-8") as f:
+            yield (f.read(), filename)
+
+
 def chunk_token_generator_streaming(
     *,
     folder_path: str,
