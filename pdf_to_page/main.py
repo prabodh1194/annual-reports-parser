@@ -1,6 +1,6 @@
 import click
 
-from bronze_to_silver.extract import extract_text_from_all_pages
+from pdf_to_page.extract import extract_text_from_all_pages
 
 
 @click.command()

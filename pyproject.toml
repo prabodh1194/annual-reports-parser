@@ -25,6 +25,7 @@ warn_unused_configs = true
 
 [tool.uv]
 dev-dependencies = [
+    "ipdb>=0.13.13",
     "ipython>=9.3.0",
     "mypy>=1.16.0",
     "pandas-stubs>=2.2.3.250308",
