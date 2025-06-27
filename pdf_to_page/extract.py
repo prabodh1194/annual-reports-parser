@@ -11,8 +11,8 @@ c = DocumentConverter()
 
 regex_replacements = {
     r"--+": "-",  # Replace multiple dashes with a single dash
-    r"\s+": " ",  # Replace multiple spaces with a single space
-    r"\n+": " ",  # Replace multiple newlines with a single space
+    r"\n+": "\n",  # Replace multiple newlines with a single space
+    r"  +": " ",  # Replace multiple spaces with a single space
     r"\t+": " ",  # Replace multiple tabs with a single space
 }
 
@@ -32,7 +32,6 @@ def extract_text_from_pdf(
         c.convert(pdf_path, page_range=(page_no, page_no))
         .document.export_to_text()
         .replace("**", "")
-        .replace("##", "")
         .strip()
     )
 
@@ -47,7 +46,7 @@ def extract_text_from_pdf(
 
 def extract_text_from_all_pages(pdf_path: str, bronze: str, silver: str) -> None:
     threads = []
-    exc = ThreadPoolExecutor(max_workers=2)
+    exc = ThreadPoolExecutor(max_workers=1)
     doc = DoclingPdfParser().load(pdf_path)
     error_pages = []
 
@@ -59,8 +58,9 @@ def extract_text_from_all_pages(pdf_path: str, bronze: str, silver: str) -> None
     for i, thread in tqdm(enumerate(threads)):
         try:
             thread.result()
-        except Exception:
+        except Exception as e:
             print(f"Error in processing page {i}: {thread}")
+            print(e)
             error_pages.append(i + 1)
             continue
 
